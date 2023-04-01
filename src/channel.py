@@ -14,6 +14,7 @@ class Channel:
         self._channel = self._youtube.channels().list(id=self._channel_id, part='snippet,statistics').execute()
         self._title = self._channel['items'][0]['snippet']['title']
         self._description = self._channel['items'][0]['snippet']['description']
+        # чтобы сделать ссылку на канал действительной, сначала создаю customUrl, а только потом саму ссылку
         self.__customUrl = self._channel['items'][0]['snippet']['customUrl']
         self._link = f'https://www.youtube.com/{self.__customUrl}'
         self._num_subscribers = self._channel['items'][0]['statistics']['subscriberCount']
@@ -24,9 +25,26 @@ class Channel:
         """Выводит в консоль информацию о канале."""
         print(json.dumps(self._channel, indent=2, ensure_ascii=False))
 
+    @classmethod
+    def get_service(cls):
+        """
+        Создаем метод, возвращающий объект для работы с YouTube API
+        """
+        return cls._youtube
 
-vdud = Channel('UCMCgOm8GZkHp8zJ6l7_hIuA')
-# print(vdud.print_info())
-print(vdud._num_subscribers)
-print(vdud._num_videos)
-print(vdud._total_views)
+    def to_json(self, filename):
+        """
+        Создаем метод, сохраняющий в файл значения атрибутов экземпляра Channel
+        """
+        data = {
+            "channel_id": self._channel_id,
+            "title": self._title,
+            "description": self._description,
+            "url": self._link,
+            "subscribers_count": self._num_subscribers,
+            "video_count": self._num_videos,
+            "view_count": self._total_views
+        }
+
+        with open(filename, 'w') as file:
+            json.dump(data, file, indent=4)

@@ -17,9 +17,33 @@ class Channel:
         # чтобы сделать ссылку на канал действительной, сначала создаю customUrl, а только потом саму ссылку
         self.__customUrl = self._channel['items'][0]['snippet']['customUrl']
         self._link = f'https://www.youtube.com/{self.__customUrl}'
-        self._num_subscribers = self._channel['items'][0]['statistics']['subscriberCount']
+        self._num_subscribers = int(self._channel['items'][0]['statistics']['subscriberCount'])
         self._num_videos = self._channel['items'][0]['statistics']['videoCount']
         self._total_views = self._channel['items'][0]['statistics']['viewCount']
+
+    def __str__(self):
+        return f'{self._title} ({self._link})'
+
+    def __add__(self, other):
+        return self._num_subscribers + other._num_subscribers
+
+    def __sub__(self, other):
+        return self._num_subscribers - other._num_subscribers
+
+    def __lt__(self, other):
+        return self._num_subscribers < other._num_subscribers
+
+    def __le__(self, other):
+        return self._num_subscribers <= other._num_subscribers
+
+    def __gt__(self, other):
+        return self._num_subscribers > other._num_subscribers
+
+    def __ge__(self, other):
+        return self._num_subscribers >= other._num_subscribers
+
+    def __eq__(self, other):
+        return self._num_subscribers == other._num_subscribers
 
     def print_info(self) -> None:
         """Выводит в консоль информацию о канале."""
